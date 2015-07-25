@@ -33,8 +33,7 @@ formatTemperature = (temperature) ->
     (String(parseInt(temperature)) + '°').rpad(' ', 3).bold
 
 header = (formattedAddress) ->
-    console.log 'Location: '.green + formattedAddress
-    console.log ''
+    console.log formattedAddress.bold
 
 signoff = ->
     console.log ''
@@ -43,7 +42,6 @@ signoff = ->
 
 hourlyDayHeading = (day) ->
     console.log day.bold
-
 
 displayHourly = (hourly) ->
     if hourly
@@ -56,10 +54,18 @@ displayHourly = (hourly) ->
                         console.log ''
                         hourlyDayHeading time.format('dddd')
                 console.log "#{time.format('ha').rpad(' ', 4).red} #{formatTemperature(hour.temperature)} #{addColorToSummary(hour.summary)} "
+        console.log ''
         # signoff()
 
-displayDaily = (daily) ->
+displayDaily = (daily, hourly, minutely) ->
     if daily
+        console.log moment().format("DD MMMM YYYY hh:mma")
+        console.log ''
+        console.log "Next Hour: ".green + minutely.summary
+        console.log "Next 24 Hours: ".green + hourly.summary
+        console.log "Next 7 Days: ".green + daily.summary
+        console.log ''
+
         for day in daily.data
             date = new moment(day.time * 1000)
             maxTime = new moment(day.temperatureMaxTime * 1000)
@@ -67,16 +73,14 @@ displayDaily = (daily) ->
                 console.log "Today".red + " #{formatTemperature(day.temperatureMax)} #{addColorToSummary(day.summary)}"
             else
                 console.log "#{date.format('ddd').red} #{formatTemperature(day.temperatureMax)} #{addColorToSummary(day.summary)}"
-
         console.log ''
-        console.log daily.summary.bold
         # signoff()
 
 exports.get = (place, hourly = false) ->
     geocoder.geocode(place, (err, data) ->
         address = data?.results?[0]
         if location = address?.geometry?.location
-            client.get("#{location.lat},#{location.lng}?units=#{defaults.units()}&exclude=minutely,alerts", (err, res, body) ->
+            client.get("#{location.lat},#{location.lng}?units=#{defaults.units()}&exclude=alerts", (err, res, body) ->
                 if err
                     console.log err
                 else
@@ -84,7 +88,7 @@ exports.get = (place, hourly = false) ->
                     if hourly
                         displayHourly body?.hourly
                     else
-                        displayDaily body?.daily
+                        displayDaily body?.daily, body?.hourly, body?.minutely
             )
         else
             console.log "I can't find your location. Please forgive me."

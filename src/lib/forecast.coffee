@@ -33,8 +33,7 @@ formatTemperature = (temperature) ->
     (String(parseInt(temperature)) + '°').rpad(' ', 3).bold
 
 header = (formattedAddress) ->
-    console.log ''
-    console.log ('--- ' + formattedAddress + ' ').rpad('-', 80)
+    console.log 'Location: '.green + formattedAddress
     console.log ''
 
 signoff = ->
@@ -44,7 +43,6 @@ signoff = ->
 
 hourlyDayHeading = (day) ->
     console.log day.bold
-    console.log ''
 
 
 displayHourly = (hourly) ->
@@ -56,10 +54,9 @@ displayHourly = (hourly) ->
                 if time.hour() == 8
                     if moment().day() isnt time.day()
                         console.log ''
-                        console.log ''
                         hourlyDayHeading time.format('dddd')
                 console.log "#{time.format('ha').rpad(' ', 4).red} #{formatTemperature(hour.temperature)} #{addColorToSummary(hour.summary)} "
-        signoff()
+        # signoff()
 
 displayDaily = (daily) ->
     if daily
@@ -67,14 +64,13 @@ displayDaily = (daily) ->
             date = new moment(day.time * 1000)
             maxTime = new moment(day.temperatureMaxTime * 1000)
             if moment().dayOfYear() is date.dayOfYear()
-                console.log "    #{formatTemperature(day.temperatureMax)} #{addColorToSummary(day.summary)}"
-                console.log ''
+                console.log "Today".red + " #{formatTemperature(day.temperatureMax)} #{addColorToSummary(day.summary)}"
             else
                 console.log "#{date.format('ddd').red} #{formatTemperature(day.temperatureMax)} #{addColorToSummary(day.summary)}"
 
         console.log ''
         console.log daily.summary.bold
-        signoff()
+        # signoff()
 
 exports.get = (place, hourly = false) ->
     geocoder.geocode(place, (err, data) ->

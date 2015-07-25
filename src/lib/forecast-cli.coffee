@@ -30,7 +30,6 @@ program.on('--help', () ->
 program.parse(process.argv)
 
 if program.units
-
     console.log "Choose the units you'd like to see in your forecasts:"
     units = ["Fahrenheit (°F)", "Celsius (°C)"]
     unitsValues = ["us", "si"]
@@ -38,9 +37,7 @@ if program.units
         defaults.saveUnits unitsValues[i]
         console.log "Thanks - units have been configured to #{units[i]}."
         process.exit()
-
 else
-
     if program.args.length is 1
         defaults.savePlace program.args[0]
         forecast.get program.args[0], program.hourly

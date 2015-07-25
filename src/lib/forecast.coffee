@@ -15,7 +15,6 @@ if (typeof String::rpad != 'function')
             str = str + padString
         return str
 
-
 addColorToSummary = (summary) ->
     parts = []
     words = summary.split(' ')

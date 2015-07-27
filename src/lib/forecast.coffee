@@ -61,9 +61,10 @@ displayDaily = (daily, hourly, minutely) ->
     if daily
         console.log moment().format("DD MMMM YYYY hh:mma")
         console.log ''
-        console.log "Next Hour: ".green + minutely.summary
-        console.log "Next 24 Hours: ".green + hourly.summary
-        console.log "Next 7 Days: ".green + daily.summary
+        console.log "Forecast".bold
+        console.log minutely.summary.green
+        console.log hourly.summary.green
+        console.log daily.summary.green
         console.log ''
 
         for day in daily.data
